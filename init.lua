@@ -26,8 +26,8 @@ local config = {
         },
 
         -- Set colorscheme to use
-        -- colorscheme = "default_theme",
-        colorscheme = "catppuccin-macchiato",
+        colorscheme = "default_theme",
+        -- colorscheme = "catppuccin-mocha",
 
         -- Add highlight groups in any theme
         highlights = {
@@ -48,6 +48,7 @@ local config = {
                         spell = false, -- sets vim.opt.spell
                         signcolumn = "auto", -- sets vim.opt.signcolumn to auto
                         wrap = false, -- sets vim.opt.wrap
+                        scrolloff = 1,
                 },
                 g = {
                         mapleader = " ", -- sets vim.g.mapleader

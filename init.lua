@@ -48,7 +48,19 @@ local config = {
                         spell = false, -- sets vim.opt.spell
                         signcolumn = "auto", -- sets vim.opt.signcolumn to auto
                         wrap = false, -- sets vim.opt.wrap
+                        tabstop = 4,
+                        shiftwidth = 4,
                         scrolloff = 1,
+                        autoindent = true,
+                        smartindent = true,
+                        colorcolumn = "100",
+                        foldcolumn = "0",
+                        foldmethod = "indent",
+                        foldlevel = 99,
+                        list = true,
+                        listchars = {
+                                tab = ">-"
+                        },
                 },
                 g = {
                         mapleader = " ", -- sets vim.g.mapleader
@@ -63,12 +75,15 @@ local config = {
         },
         -- If you need more control, you can use the function()...end notation
         -- options = function(local_vim)
-        --   local_vim.opt.relativenumber = true
-        --   local_vim.g.mapleader = " "
-        --   local_vim.opt.whichwrap = vim.opt.whichwrap - { 'b', 's' } -- removing option from list
-        --   local_vim.opt.shortmess = vim.opt.shortmess + { I = true } -- add to option list
+        --         local_vim.opt.relativenumber = false
+        --         local_vim.opt.number = true
+        --         local_vim.opt.spell = false
+        --         local_vim.opt.signcolumn = "auto"
+        --         local_vim.opt.wrap = false
+        --         local_vim.opt.scrolloff = 1
+        --         local_vim.g.mapleader = " "
         --
-        --   return local_vim
+        --         return local_vim
         -- end,
 
         -- Set dashboard header
@@ -145,7 +160,7 @@ local config = {
                 formatting = {
                         -- control auto formatting on save
                         format_on_save = {
-                                enabled = true, -- enable or disable format on save globally
+                                enabled = false, -- enable or disable format on save globally
                                 allow_filetypes = { -- enable format on save for specified filetypes only
                                         -- "go",
                                 },
@@ -353,6 +368,24 @@ local config = {
                 --     ["~/%.config/foo/.*"] = "fooscript",
                 --   },
                 -- }
+                local function alpha_on_bye(cmd)
+                        local bufs = vim.fn.getbufinfo { buflisted = true }
+                        vim.cmd(cmd)
+                        if require("core.utils").is_available "alpha-nvim" and not bufs[2] then
+                                require("alpha").start(true)
+                        end
+                end
+
+                vim.keymap.del("n", "<leader>c")
+                if require("core.utils").is_available "bufdelete.nvim" then
+                        vim.keymap.set("n", "<leader>c", function()
+                                alpha_on_bye "Bdelete!"
+                        end, { desc = "Close buffer" })
+                else
+                        vim.keymap.set("n", "<leader>c", function()
+                                alpha_on_bye "bdelete!"
+                        end, { desc = "Close buffer" })
+                end
         end,
 }
 

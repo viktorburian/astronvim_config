@@ -147,7 +147,7 @@ local config = {
 
         -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
         diagnostics = {
-                virtual_text = true,
+                virtual_text = false,
                 underline = true,
         },
 
@@ -250,9 +250,9 @@ local config = {
                                 astronvim.status.component.fill(),
                                 astronvim.status.component.macro_recording(),
                                 astronvim.status.component.fill(),
+                                astronvim.status.component.nav { scrollbar = false, },
                                 astronvim.status.component.lsp(),
                                 astronvim.status.component.treesitter(),
-                                astronvim.status.component.nav { scrollbar = false, },
                         }
                         -- return the final configuration table
                         return config

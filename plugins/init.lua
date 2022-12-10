@@ -3,9 +3,46 @@ return {
       config = function ()
         require('neoscroll').setup()
       end},
-    { "simrat39/rust-tools.nvim" },
+    { "simrat39/rust-tools.nvim",
+      after = { "mason-lspconfig.nvim" },
+      -- Is configured via the server_registration_override installed below!
+      config = function()
+        require("rust-tools").setup {
+          server = astronvim.lsp.server_settings "rust_analyzer",
+          tools = {
+            inlay_hints = {
+              parameter_hints_prefix = "  ",
+              other_hints_prefix = "  ",
+            },
+          },
+        }
+      end,
+    },
     { "mfussenegger/nvim-dap",
       config = function()
+        -- Debug configuration
+        local dap = require('dap')
+        dap.adapters.lldb = {
+          type = 'executable',
+          command = '/usr/local/opt/llvm/bin/lldb-vscode',
+          name = 'lldb'
+        }
+        dap.configurations.cpp = {
+          {
+            name = 'Launch',
+            type = 'lldb',
+            request = 'launch',
+            program = function()
+              return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+            end,
+            cwd = '${workspaceFolder}',
+            stopOnEntry = false,
+            args = {},
+          },
+        }
+        dap.configurations.c = dap.configurations.cpp
+        dap.configurations.rust = dap.configurations.cpp
+
         -- DAP mappings:
         local map = vim.api.nvim_set_keymap
         map("n", "<f5>", ":lua require('dap').continue()<cr>", { desc = "Continue" })
@@ -28,6 +65,7 @@ return {
         )
         map("n", "<leader>dr", ":lua require('dap').repl.open()<cr>", { desc = "Open REPL" })
         map("n", "<leader>dR", ":lua require('dap').run_last()<cr>", { desc = "Run last debugged program" })
+        map("n", "<leader>dp", ":lua require('dap.utils').pick_process()<cr>", { desc = "Attach to process" })
         map("n", "<leader>dX", ":lua require('dap').terminate()<cr>", { desc = "Terminate program being debugged" })
         map("n", "<leader>du", ":lua require('dap').up()<cr>", { desc = "Up one frame" })
         map("n", "<leader>dd", ":lua require('dap').down()<cr>", { desc = "Down one frame" })

@@ -9,12 +9,6 @@ return {
       config = function()
         require("rust-tools").setup {
           server = astronvim.lsp.server_settings "rust_analyzer",
-          tools = {
-            inlay_hints = {
-              parameter_hints_prefix = "  ",
-              other_hints_prefix = "  ",
-            },
-          },
         }
       end,
     },

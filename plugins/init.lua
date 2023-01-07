@@ -1,103 +1,24 @@
 return {
-    { "karb94/neoscroll.nvim",
-      config = function ()
-        require('neoscroll').setup()
-      end},
-    { "simrat39/rust-tools.nvim",
-      after = { "mason-lspconfig.nvim" },
-      -- Is configured via the server_registration_override installed below!
-      config = function()
-        require("rust-tools").setup {
-          server = astronvim.lsp.server_settings "rust_analyzer",
-        }
-      end,
+    ["karb94/neoscroll.nvim"] = {
+        config = function() require('neoscroll').setup() end,
     },
-    -- { "mfussenegger/nvim-dap",
-    --   config = function()
-    --     -- Debug configuration
-    --     local dap = require('dap')
-    --     dap.adapters.lldb = {
-    --       type = 'executable',
-    --       command = '/usr/local/opt/llvm/bin/lldb-vscode',
-    --       name = 'lldb'
-    --     }
-    --     dap.configurations.cpp = {
-    --       {
-    --         name = 'Launch',
-    --         type = 'lldb',
-    --         request = 'launch',
-    --         program = function()
-    --           return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-    --         end,
-    --         cwd = '${workspaceFolder}',
-    --         stopOnEntry = false,
-    --         args = {},
-    --       },
-    --     }
-    --     dap.configurations.c = dap.configurations.cpp
-    --     dap.configurations.rust = dap.configurations.cpp
-    --
-    --     -- DAP mappings:
-    --     local map = vim.api.nvim_set_keymap
-    --     map("n", "<f5>", ":lua require('dap').continue()<cr>", { desc = "Continue" })
-    --     map("n", "<f10>", ":lua require('dap').step_over()<cr>", { desc = "Step over" })
-    --     map("n", "<f11>", ":lua require('dap').step_into()<cr>", { desc = "Step into" })
-    --     map("n", "<leader>db", ":lua require('dap').toggle_breakpoint()<cr>", { desc = "Toggle breakpoint" })
-    --     map("n", "<leader>dx", ":lua require('dap').clear_breakpoints()<cr>", { desc = "Clear breakpoints" })
-    --     map(
-    --       "n",
-    --       "<leader>dc",
-    --       ":lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<cr>",
-    --       { desc = "Set conditional breakpoint" }
-    --     )
-    --     map(
-    --       "n",
-    --       "<leader>dl",
-    --       ":lua require('dap').set_breakpoint(nil, nil, vim.fn.input('Logpoint message: '))<cr>",
-    --       { desc = "Set logpoint" }
-    --     )
-    --     map("n", "<leader>dr", ":lua require('dap').repl.open()<cr>", { desc = "Open REPL" })
-    --     map("n", "<leader>dR", ":lua require('dap').run_last()<cr>", { desc = "Run last debugged program" })
-    --     map("n", "<leader>dp", ":lua require('dap.utils').pick_process()<cr>", { desc = "Attach to process" })
-    --     map("n", "<leader>dX", ":lua require('dap').terminate()<cr>", { desc = "Terminate program being debugged" })
-    --     map("n", "<leader>du", ":lua require('dap').up()<cr>", { desc = "Up one frame" })
-    --     map("n", "<leader>dd", ":lua require('dap').down()<cr>", { desc = "Down one frame" })
-    --     map("n", "<leader>de", ":lua require('dapui').eval()<cr>", { desc = "Evaluate expression" })
-    --   end},
-    -- { "rcarriga/nvim-dap-ui",
-    --   requires = { "nvim-dap", "rust-tools.nvim" },
-    --   config = function()
-    --     local dapui = require "dapui"
-    --     dapui.setup {icons = { expanded = "", collapsed = "▸", current_frame = "▸" },}
-    --
-    --     local dap = require "dap"
-    --     dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
-    --     dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
-    --   end,
-    -- },
-    {
-        "mfussenegger/nvim-dap-python",
-        config = function ()
-            local dap = require('dap')
-            dap.adapters.python = {
-              type = 'executable';
-              command = '/Users/viktor/.venv/nvim-lsp/bin/python';
-              args = { '-m', 'debugpy.adapter' };
-            }
-            dap.configurations.python = {
-              {
-                type = 'python';
-                request = 'launch';
-                name = "Launch file";
-                program = "${file}";
-                pythonPath = function()
-                  return '/usr/local/bin/python3'
-                end;
-              },
-            }
+    ["simrat39/rust-tools.nvim"] = {
+        after = "mason-lspconfig.nvim", -- make sure to load after mason-lspconfig
+        config = function()
+          require("rust-tools").setup {
+            server = astronvim.lsp.server_settings "rust_analyzer", -- get the server settings and built in capabilities/on_attach
+          }
         end,
     },
-    { "theHamsta/nvim-dap-virtual-text",
+    ["p00f/clangd_extensions.nvim"] = {
+        after = "mason-lspconfig.nvim", -- make sure to load after mason-lspconfig
+        config = function()
+          require("clangd_extensions").setup {
+            server = astronvim.lsp.server_settings "clangd", -- get the server settings and built in capabilities/on_attach
+          }
+        end,
+    },
+    ["theHamsta/nvim-dap-virtual-text"] = {
       config = function ()
         require('nvim-dap-virtual-text').setup{
           enabled = true,                        -- enable this plugin (the default)
@@ -117,5 +38,16 @@ return {
                                                  -- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
         }
       end},
-      { "nvim-telescope/telescope-dap.nvim" },
+    ["nvim-telescope/telescope-dap.nvim"] = {},
+    ["rcarriga/nvim-dap-ui"] = {
+        config = function()
+            local dapui = require "dapui"
+            dapui.setup {
+                icons = { expanded = "", collapsed = "▸", current_frame = "▸" },
+            }
+        local dap = require "dap"
+        dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
+        dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
+        end,
+    },
 }

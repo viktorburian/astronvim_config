@@ -153,9 +153,10 @@ local config = {
 
         -- Extend LSP configuration
         lsp = {
+                skip_setup = { "rust_analyzer", "clangd" },
                 -- enable servers that you already have installed without mason
                 servers = {
-                        -- "pyright"
+                        "pyright",
                 },
                 formatting = {
                         -- control auto formatting on save
@@ -193,18 +194,14 @@ local config = {
 
                 -- Add overrides for LSP server settings, the keys are the name of the server
                 ["server-settings"] = {
-                        -- example for addings schemas to yamlls
-                        -- yamlls = { -- override table for require("lspconfig").yamlls.setup({...})
-                        --   settings = {
-                        --     yaml = {
-                        --       schemas = {
-                        --         ["http://json.schemastore.org/github-workflow"] = ".github/workflows/*.{yml,yaml}",
-                        --         ["http://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
-                        --         ["http://json.schemastore.org/ansible-stable-2.9"] = "roles/tasks/*.{yml,yaml}",
-                        --       },
-                        --     },
-                        --   },
-                        -- },
+                        clangd = {
+                                capabilities = {
+                                        offsetEncoding = "utf-8",
+                                },
+                        },
+                },
+                ["mason-lspconfig"] = {
+                        ensure_installed = { "rust_analyzer", "clangd" },
                 },
         },
 
@@ -222,6 +219,21 @@ local config = {
                         ["<leader>bc"] = { "<cmd>BufferLinePickClose<cr>", desc = "Pick to close" },
                         ["<leader>bj"] = { "<cmd>BufferLinePick<cr>", desc = "Pick to jump" },
                         ["<leader>bt"] = { "<cmd>BufferLineSortByTabs<cr>", desc = "Sort by tabs" },
+                        -- DAP mappings:
+                        ["<F5>"] = { function() require('dap').continue() end, desc = "Continue" },
+                        ["<F10>"] = { function() require('dap').step_over() end, desc = "Step over" },
+                        ["<F11>"] = { function() require('dap').step_into() end, desc = "Step into" },
+                        ["<leader>db"] = { function() require('dap').toggle_breakpoint() end, desc = "Toggle breakpoint" },
+                        ["<leader>dx"] = { function() require('dap').clear_breakpoints() end, desc = "Clear breakpoints" },
+                        ["<leader>dc"] = { function() require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Set conditional breakpoint" },
+                        ["<leader>dl"] = { function() require('dap').set_breakpoint(nil, nil, vim.fn.input('Logpoint message: ')) end, desc = "Set logpoint" },
+                        ["<leader>dr"] = { function() require('dap').repl.open() end, desc = "Open REPL" },
+                        ["<leader>dR"] = { function() require('dap').run_last() end, desc = "Run last debugged program" },
+                        ["<leader>dp"] = { function() require('dap.utils').pick_process() end, desc = "Attach to process" },
+                        ["<leader>dX"] = { function() require('dap').terminate() end, desc = "Terminate program being debugged" },
+                        ["<leader>du"] = { function() require('dap').up() end, desc = "Up one frame" },
+                        ["<leader>dd"] = { function() require('dap').down() end, desc = "Down one frame" },
+                        ["<leader>de"] = { function() require('dapui').eval() end, desc = "Evaluate expression" },
                         -- quick save
                         -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
                 },
@@ -347,6 +359,7 @@ local config = {
                                         -- third key is the key to bring up next level and its displayed
                                         -- group name in which-key top level menu
                                         ["b"] = { name = "Buffer" },
+                                        ["d"] = { name = "Debugger" },
                                 },
                         },
                 },

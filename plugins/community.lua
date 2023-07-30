@@ -4,5 +4,4 @@ return {
     { import = "astrocommunity.scrolling.mini-animate" },
     { import = "astrocommunity.motion.nvim-surround" },
     { import = "astrocommunity.pack.cpp" },
-    { import = "astrocommunity.pack.rust" },
 }
